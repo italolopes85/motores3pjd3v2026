@@ -18,7 +18,7 @@ public class Gamemanager : MonoBehaviour
 
     void Start()
     {
-        UpdateGameState(GameState, SelectColor);
+        UpdateGameState(GameState.SelectColor);
         
     }
 
