@@ -18,16 +18,19 @@ public class Gamemanager : MonoBehaviour
 
     void Start()
     {
-        UpdateGameState(GameState, Selector);
+        UpdateGameState(GameState, SelectColor);
+        
     }
-    public void Update(GameState newState)
+
+    public object SelectColor { get; set; }
+
+    public void UpdateGameState(GameState newState)
     {
         State = newState;
 
         switch (newState)
         {
             case GameState.SelectColor:
-                HandheldSelectColor();
                 break;
             case GameState.PlayerTurn:
                 break;
@@ -42,7 +45,8 @@ public class Gamemanager : MonoBehaviour
         }
         OnGameStateChanged?.Invoke(newState);
     }
-    
+
+    public GameState State { get; set; }
 }
     public enum GameState
     {
