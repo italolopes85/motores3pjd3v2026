@@ -1,59 +1,82 @@
-using System;
-using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
-public class Gamemanager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
-    
+    public static GameManager Instance;
 
-    public static Gamemanager instance;
-    
-    public GameState gameState;
-    public static event Action<GameState> OnGameStateChanged;
+    public GameState CurrentState;
 
-    void Awake()
+    [Header("Player Input")]
+    [SerializeField] private PlayerInput playerInput;
+
+    private void Awake()
     {
-        instance = this;
-    }
-
-    void Start()
-    {
-        UpdateGameState(GameState.SelectColor);
-        
-    }
-
-    public object SelectColor { get; set; }
-
-    public void UpdateGameState(GameState newState)
-    {
-        State = newState;
-
-        switch (newState)
+        // Singleton
+        if (Instance != null && Instance != this)
         {
-            case GameState.SelectColor:
-                break;
-            case GameState.PlayerTurn:
-                break;
-            case GameState.EnaemyTurn:
-                break;
-            case GameState.Victory:
-                break;
-            case GameState.lose:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
+            Destroy(gameObject);
+            return;
         }
-        OnGameStateChanged?.Invoke(newState);
+
+        Instance = this;
+
+        DontDestroyOnLoad(gameObject);
     }
 
-    public GameState State { get; set; }
-}
-    public enum GameState
+    private void Start()
     {
-       SelectColor,
-       PlayerTurn,
-       EnaemyTurn,
-       Victory,
-       lose
+        ChangeState(GameState.Iniciando);
+
+        // Começa pela Splash
+        LoadScene("Splash");
     }
 
+    public void ChangeState(GameState newState)
+    {
+        CurrentState = newState;
+
+        Debug.Log("Estado Atual: " + CurrentState);
+    }
+
+    public void LoadScene(string sceneName)
+    {
+        // Apenas o GameManager pode trocar cenas
+        SceneManager.LoadScene(sceneName);
+
+        switch (sceneName)
+        {
+            case "Splash":
+                ChangeState(GameState.Iniciando);
+                break;
+
+            case "MenuPrincipal":
+                ChangeState(GameState.MenuPrincipal);
+                break;
+
+            case "GetStarted_Scene":
+                ChangeState(GameState.Gameplay);
+
+                AssignPlayerInput();
+                break;
+        }
+    }
+
+    private void AssignPlayerInput()
+    {
+        if (playerInput != null)
+        {
+            playerInput.ActivateInput();
+
+            Debug.Log("Input alocado ao jogador.");
+        }
+    }
+
+    public void QuitGame()
+    {
+        Debug.Log("Saindo do jogo...");
+
+        Application.Quit();
+    }
+}
