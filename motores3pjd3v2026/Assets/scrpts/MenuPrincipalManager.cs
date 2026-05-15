@@ -9,7 +9,7 @@ public class MenuPrincipalManager : MonoBehaviour
     public void Play()
     {
         SceneManager.LoadScene("Play");
-        SceneManager.LoadScene("GetStarted_Scene.unity");
+        SceneManager.LoadScene("GetStarted_Scene");
     }
 
     public void Skip()
