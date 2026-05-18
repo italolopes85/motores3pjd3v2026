@@ -8,7 +8,7 @@ public class MenuPrincipalManager : MonoBehaviour
     
     public void Play()
     {
-        SceneManager.LoadScene("Play");
+       // SceneManager.LoadScene("gamePlay");
         SceneManager.LoadScene("GetStarted_Scene");
     }
 

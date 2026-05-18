@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
@@ -13,7 +14,6 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        // Singleton
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -21,33 +21,40 @@ public class GameManager : MonoBehaviour
         }
 
         Instance = this;
-
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Start()
     {
-        ChangeState(GameState.Iniciando);
-
-        // Começa pela Splash
-        LoadScene("Splash");
+        LoadScene("splash");
     }
 
     public void ChangeState(GameState newState)
     {
         CurrentState = newState;
-
-        Debug.Log("Estado Atual: " + CurrentState);
+        Debug.Log("Estado Atual Alterado Para: " + CurrentState);
     }
 
     public void LoadScene(string sceneName)
     {
-        // Apenas o GameManager pode trocar cenas
         SceneManager.LoadScene(sceneName);
-
-        switch (sceneName)
+    }
+    
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        switch (scene.name)
         {
-            case "Splash":
+            case "splash":
                 ChangeState(GameState.Iniciando);
                 break;
 
@@ -57,9 +64,12 @@ public class GameManager : MonoBehaviour
 
             case "GetStarted_Scene":
                 ChangeState(GameState.Gameplay);
-
                 AssignPlayerInput();
                 break;
+        }
+        if (CurrentState == GameState.Gameplay)
+        {
+            Debug.Log("Estado: Gameplay rodando no Update.");
         }
     }
 
@@ -68,7 +78,6 @@ public class GameManager : MonoBehaviour
         if (playerInput != null)
         {
             playerInput.ActivateInput();
-
             Debug.Log("Input alocado ao jogador.");
         }
     }
@@ -76,7 +85,9 @@ public class GameManager : MonoBehaviour
     public void QuitGame()
     {
         Debug.Log("Saindo do jogo...");
-
         Application.Quit();
     }
+
+    
 }
+
