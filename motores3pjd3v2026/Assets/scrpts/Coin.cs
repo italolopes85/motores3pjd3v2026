@@ -2,14 +2,17 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
+    [SerializeField] private float rotationSpeed = 100f;
+
+    private void Update()
+    {
+        transform.Rotate(rotationSpeed * Time.deltaTime, 0, 0);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        PlayerCoinCollector player =
-            other.GetComponent<PlayerCoinCollector>();
-
-        if(player != null)
+        if (other.CompareTag("Player"))
         {
-            player.CollectCoin();
             Destroy(gameObject);
         }
     }
