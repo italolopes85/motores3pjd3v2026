@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
     }
-    
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         switch (scene.name)
@@ -65,8 +65,10 @@ public class GameManager : MonoBehaviour
             case "GetStarted_Scene":
                 ChangeState(GameState.Gameplay);
                 AssignPlayerInput();
+                LoadGUI();
                 break;
         }
+
         if (CurrentState == GameState.Gameplay)
         {
             Debug.Log("Estado: Gameplay rodando no Update.");
@@ -80,6 +82,19 @@ public class GameManager : MonoBehaviour
             playerInput.ActivateInput();
             Debug.Log("Input alocado ao jogador.");
         }
+        else
+        {
+            Debug.LogWarning("Nenhum PlayerInput encontrado.");
+        }
+    }
+
+    private void LoadGUI()
+    {
+        if (!SceneManager.GetSceneByName("GUI").isLoaded)
+        {
+            SceneManager.LoadScene("GUI", LoadSceneMode.Additive);
+            Debug.Log("Cena GUI carregada.");
+        }
     }
 
     public void QuitGame()
@@ -87,7 +102,4 @@ public class GameManager : MonoBehaviour
         Debug.Log("Saindo do jogo...");
         Application.Quit();
     }
-
-    
 }
-
